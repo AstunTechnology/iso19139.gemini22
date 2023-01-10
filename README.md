@@ -22,7 +22,7 @@ Use GeoNetwork 4.2.x.
 ### The best approach is to add the plugin as a submodule. Use https://github.com/geonetwork/core-geonetwork/blob/4.2.x/add-schema.sh for automatic deployment:
 
 ```
-.\add-schema.sh iso19139.gemini22 http://github.com/metadata101/iso19139.gemini22 4.2.x
+./add-schema.sh iso19139.gemini22 http://github.com/astuntechnology/iso19139.gemini22_GN3 4.2.x
 ```
 
 #### Building the application 
