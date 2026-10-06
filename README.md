@@ -1,41 +1,22 @@
-# GEMINI 2.2 schema plugin for GeoNetwork 4.4.x
+# Gemini 2.2 Metadata Profile schema plugin
 
-This is the GEMINI 2.2 schema plugin for GeoNetwork 4.4.x. Switch to the appropriate branch in this repository for versions that work with earlier versions of GeoNetwork.
+Gemini 2.2 Metadata Profile
 
-### GeoNetwork version to use with this plugin
+## GeoNetwork versions to use with this plugin
 
-Use GeoNetwork 4.4.x.
+**Use the correct branch for your version of GeoNetwork**
 
-**This will not work in earlier or later versions of the software.**
+Choose the correct link below for your version of GeoNetwork and see the README for installation
+instructions:
 
-## Installing the plugin in GeoNetwork 4.4.x
+Deprecated Versions:
 
-### Adding to an existing installation
+* [GeoNetwork 3.4.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/3.4.x)
+* [GeoNetwork 3.8.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/3.8.x)
+* [GeoNetwork 3.10.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/3.10.x)
+* [GeoNetwork 3.12.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/3.12.x)
 
-* Download or clone this repository, ensuring you choose the correct branch (4.4.x).
-* Copy `src/main/plugin/iso19139.gemini22` to `INSTALL_DIR/geonetwork/WEB_INF/data/config/schema_plugins/iso19139.gemini22` in your installation.
-* Copy `target/schema-iso19139.gemini22-4.4.12-0.jar` to `INSTALL_DIR/geonetwork/WEB_INF/lib`
-* Restart GeoNetwork
-* Check that the schema is registered by visiting Admin Console -> Metadata and Templates -> Standards in GeoNetwork. If you do not see iso19139.gemini22 then it is not correctly deployed.  Check your GeoNetwork log files for errors.
-* Adding the plugin to the source code prior to compiling GeoNetwork
+Current Active Versions:
 
-### The best approach is to add the plugin as a submodule. Use https://github.com/geonetwork/core-geonetwork/blob/4.4.12/add-schema.sh for automatic deployment:
-
-```
-./add-schema.sh iso19139.gemini22 http://github.com/astuntechnology/iso19139.gemini22_GN3 4.4.x
-```
-
-#### Building the application
-
-See http://docs.geonetwork-opensource.org/4.4/install-guide/installing-from-source-code/.
-
-Ensure that you build GeoNetwork with the directive `-DschemasCopy=True` (and also use the same directive if running using the embedded jetty server plugin). For example from the GeoNetwork root directory:
-
-```
-sudo mvn clean install -DskipTests -DschemasCopy=true -Pes
-cd web
-sudo mvn jetty:run -DschemasCopy=true
-```
-
-
-Once the application is built `web/target/geonetwork.war` will contain GeoNetwork with the Gemini 2.2 schema plugin included.
+* [GeoNetwork 4.2.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/4.2.x)
+* [GeoNetwork 4.4.x](https://github.com/AstunTechnology/iso19139.gemini22/tree/4.4.x)
