@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xsl:stylesheet xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                xmlns:iso="http://purl.oclc.org/dsdl/schematron"
+<xsl:stylesheet xmlns:iso="http://purl.oclc.org/dsdl/schematron"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                xmlns:saxon="http://saxon.sf.net/"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:schold="http://www.ascc.net/xml/schematron"
                 xmlns:gml="http://www.opengis.net/gml"
                 xmlns:gmd="http://www.isotc211.org/2005/gmd"
@@ -12,9 +14,8 @@
                 xmlns:geonet="http://www.fao.org/geonetwork"
                 xmlns:skos="http://www.w3.org/2004/02/skos/core#"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is
-      the preferred method for meta-stylesheets to use where possible.
-    -->
+                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is 
+    the preferred method for meta-stylesheets to use where possible. -->
 <xsl:param name="archiveDirParameter"/>
    <xsl:param name="archiveNameParameter"/>
    <xsl:param name="fileNameParameter"/>
@@ -48,15 +49,13 @@
 
 
 <!--MODE: SCHEMATRON-SELECT-FULL-PATH-->
-<!--This mode can be used to generate an ugly though full XPath for locators
-    -->
+<!--This mode can be used to generate an ugly though full XPath for locators-->
 <xsl:template match="*" mode="schematron-select-full-path">
       <xsl:apply-templates select="." mode="schematron-get-full-path"/>
    </xsl:template>
 
    <!--MODE: SCHEMATRON-FULL-PATH-->
-<!--This mode can be used to generate an ugly though full XPath for locators
-    -->
+<!--This mode can be used to generate an ugly though full XPath for locators-->
 <xsl:template match="*" mode="schematron-get-full-path">
       <xsl:apply-templates select="parent::*" mode="schematron-get-full-path"/>
       <xsl:text>/</xsl:text>
@@ -73,7 +72,7 @@
          </xsl:otherwise>
       </xsl:choose>
       <xsl:variable name="preceding"
-                    select="count(preceding-sibling::*[local-name()=local-name(current())                                      and namespace-uri() = namespace-uri(current())])"/>
+                    select="count(preceding-sibling::*[local-name()=local-name(current())                                   and namespace-uri() = namespace-uri(current())])"/>
       <xsl:text>[</xsl:text>
       <xsl:value-of select="1+ $preceding"/>
       <xsl:text>]</xsl:text>
@@ -82,8 +81,7 @@
       <xsl:apply-templates select="parent::*" mode="schematron-get-full-path"/>
       <xsl:text>/</xsl:text>
       <xsl:choose>
-         <xsl:when test="namespace-uri()=''">@
-              <xsl:value-of select="name()"/>
+         <xsl:when test="namespace-uri()=''">@<xsl:value-of select="name()"/>
          </xsl:when>
          <xsl:otherwise>
             <xsl:text>@*[local-name()='</xsl:text>
@@ -108,14 +106,12 @@
          </xsl:if>
       </xsl:for-each>
       <xsl:if test="not(self::*)">
-         <xsl:text/>/@
-        <xsl:value-of select="name(.)"/>
+         <xsl:text/>/@<xsl:value-of select="name(.)"/>
       </xsl:if>
    </xsl:template>
    <!--MODE: SCHEMATRON-FULL-PATH-3-->
-<!--This mode can be used to generate prefixed XPath for humans
-      (Top-level element has index)
-    -->
+<!--This mode can be used to generate prefixed XPath for humans 
+	(Top-level element has index)-->
 <xsl:template match="node() | @*" mode="schematron-get-full-path-3">
       <xsl:for-each select="ancestor-or-self::*">
          <xsl:text>/</xsl:text>
@@ -127,12 +123,11 @@
          </xsl:if>
       </xsl:for-each>
       <xsl:if test="not(self::*)">
-         <xsl:text/>/@
-        <xsl:value-of select="name(.)"/>
+         <xsl:text/>/@<xsl:value-of select="name(.)"/>
       </xsl:if>
    </xsl:template>
 
-   <!--MODE: GENERATE-ID-FROM-PATH-->
+   <!--MODE: GENERATE-ID-FROM-PATH -->
 <xsl:template match="/" mode="generate-id-from-path"/>
    <xsl:template match="text()" mode="generate-id-from-path">
       <xsl:apply-templates select="parent::*" mode="generate-id-from-path"/>
@@ -156,7 +151,7 @@
       <xsl:value-of select="concat('.',name(),'-',1+count(preceding-sibling::*[name()=name(current())]),'-')"/>
    </xsl:template>
 
-   <!--MODE: GENERATE-ID-2-->
+   <!--MODE: GENERATE-ID-2 -->
 <xsl:template match="/" mode="generate-id-2">U</xsl:template>
    <xsl:template match="*" mode="generate-id-2" priority="2">
       <xsl:text>U</xsl:text>
@@ -184,13 +179,10 @@
                               title="INSPIRE metadata implementing rule validation"
                               schemaVersion="">
          <xsl:comment>
-            <xsl:value-of select="$archiveDirParameter"/>
-         
-        <xsl:value-of select="$archiveNameParameter"/>
-         
-        <xsl:value-of select="$fileNameParameter"/>
-         
-        <xsl:value-of select="$fileDirParameter"/>
+            <xsl:value-of select="$archiveDirParameter"/>   
+		 <xsl:value-of select="$archiveNameParameter"/>  
+		 <xsl:value-of select="$fileNameParameter"/>  
+		 <xsl:value-of select="$fileDirParameter"/>
          </xsl:comment>
          <svrl:ns-prefix-in-attribute-values uri="http://www.opengis.net/gml" prefix="gml"/>
          <svrl:ns-prefix-in-attribute-values uri="http://www.isotc211.org/2005/gmd" prefix="gmd"/>
@@ -326,14 +318,12 @@
    <!--SCHEMATRON PATTERNS-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">INSPIRE metadata implementing rule validation</svrl:text>
 
-   <!--PATTERN
-        $loc/strings/identification-->
+   <!--PATTERN $loc/strings/identification-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/identification"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:identificationInfo/*/gmd:citation/gmd:CI_Citation" priority="1003"
                  mode="M9">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
@@ -342,8 +332,7 @@
                     select="not(gmd:title) or gmd:title/@gco:nilReason='missing'"/>
       <xsl:variable name="resourceTitle" select="gmd:title/*/text()"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($noResourceTitle)"/>
          <xsl:otherwise>
@@ -361,8 +350,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($noResourceTitle)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($noResourceTitle)">
@@ -382,8 +370,7 @@
       <xsl:apply-templates select="*" mode="M9"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:distributionInfo/*/gmd:transferOptions/*/gmd:onLine/gmd:CI_OnlineResource"
                  priority="1002"
                  mode="M9">
@@ -393,8 +380,7 @@
       <xsl:variable name="noResourceLocator"
                     select="normalize-space(gmd:linkage/gmd:URL)=''       or not(gmd:linkage)"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($noResourceLocator)"/>
          <xsl:otherwise>
@@ -412,8 +398,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($noResourceLocator)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($noResourceLocator)">
@@ -433,8 +418,7 @@
       <xsl:apply-templates select="*" mode="M9"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_Metadata" priority="1001" mode="M9">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl" context="//gmd:MD_Metadata"/>
       <xsl:variable name="resourceType_present"
@@ -442,8 +426,7 @@
       <xsl:variable name="resourceType"
                     select="string-join(gmd:hierarchyLevel/*/@codeListValue, ',')"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$resourceType_present"/>
          <xsl:otherwise>
@@ -461,8 +444,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$resourceType_present">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$resourceType_present">
@@ -482,8 +464,7 @@
       <xsl:apply-templates select="*" mode="M9"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']|    //srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1000"
                  mode="M9">
@@ -493,8 +474,7 @@
       <xsl:variable name="noResourceAbstract"
                     select="not(gmd:abstract) or gmd:abstract/@gco:nilReason='missing'"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($noResourceAbstract)"/>
          <xsl:otherwise>
@@ -512,8 +492,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($noResourceAbstract)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($noResourceAbstract)">
@@ -537,14 +516,12 @@
       <xsl:apply-templates select="*" mode="M9"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/dataIdentification-->
+   <!--PATTERN $loc/strings/dataIdentification-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/dataIdentification"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification[    ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'series'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'dataset'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = '']|    //*[@gco:isoType='gmd:MD_DataIdentification' and (    ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'series'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'dataset'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = '')]"
                  priority="1000"
                  mode="M10">
@@ -555,8 +532,7 @@
       <xsl:variable name="euLanguage"
                     select="     not(gmd:language/@gco:nilReason='missing') and      geonet:contains-any-of($resourceLanguage,      ('eng', 'fre', 'ger', 'spa', 'dut', 'ita', 'cze', 'lav', 'dan', 'lit', 'mlt',      'pol', 'est', 'por', 'fin', 'rum', 'slo', 'slv', 'gre', 'bul',      'hun', 'swe', 'gle'))"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$euLanguage"/>
          <xsl:otherwise>
@@ -574,8 +550,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$euLanguage">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$euLanguage">
@@ -596,8 +571,7 @@
       <xsl:variable name="noTopic"
                     select="not(gmd:topicCategory)  or      gmd:topicCategory/gmd:MD_TopicCategoryCode/text() = ''"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($noTopic)"/>
          <xsl:otherwise>
@@ -615,8 +589,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($noTopic)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($noTopic)">
@@ -640,8 +613,7 @@
       <xsl:variable name="resourceIdentifier_codeSpace"
                     select="gmd:citation/gmd:CI_Citation/gmd:identifier/*/gmd:codeSpace/*/text()"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$resourceIdentifier"/>
          <xsl:otherwise>
@@ -659,8 +631,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$resourceIdentifier_code">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$resourceIdentifier_code">
@@ -678,8 +649,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$resourceIdentifier_codeSpace">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$resourceIdentifier_codeSpace">
@@ -703,14 +673,12 @@
       <xsl:apply-templates select="*" mode="M10"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/serviceIdentification-->
+   <!--PATTERN $loc/strings/serviceIdentification-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/serviceIdentification"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1000"
                  mode="M11">
@@ -722,8 +690,7 @@
       <xsl:variable name="coupledResource"
                     select="../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue='service'     and //srv:operatesOn"/>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$coupledResource and $coupledResourceHref!=''">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$coupledResource and $coupledResourceHref!=''">
@@ -741,8 +708,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$coupledResource and $coupledResourceUUID!=''">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$coupledResource and $coupledResourceUUID!=''">
@@ -763,8 +729,7 @@
       <xsl:variable name="noServiceType"
                     select="geonet:contains-any-of(srv:serviceType/gco:LocalName,      ('view', 'discovery', 'download', 'transformation', 'invoke', 'other'))"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$noServiceType"/>
          <xsl:otherwise>
@@ -782,8 +747,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$noServiceType">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$noServiceType">
@@ -807,25 +771,22 @@
       <xsl:apply-templates select="*" mode="M11"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/theme-->
+   <!--PATTERN $loc/strings/theme-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/theme"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']"
                  priority="1000"
                  mode="M12">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                        context="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']"/>
       <xsl:variable name="inspire-thesaurus"
-                    select="document(concat('file:///', $thesaurusDir, '/external/thesauri/theme/httpinspireeceuropaeutheme-theme.rdf'))"/>
+                    select="document(concat('file:///', $thesaurusDir, '/external/thesauri/theme/inspire-theme.rdf'))"/>
       <xsl:variable name="inspire-theme" select="$inspire-thesaurus//skos:Concept"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="count($inspire-theme) &gt; 0"/>
          <xsl:otherwise>
@@ -852,8 +813,7 @@
       <xsl:variable name="inspire-theme-found"
                     select="count($inspire-thesaurus//skos:Concept[skos:prefLabel = $keyword])"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$inspire-theme-found &gt; 0"/>
          <xsl:otherwise>
@@ -871,8 +831,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$inspire-theme-found &gt; 0">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$inspire-theme-found &gt; 0">
@@ -890,8 +849,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$thesaurus_name">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$thesaurus_name">
@@ -916,14 +874,12 @@
       <xsl:apply-templates select="*" mode="M12"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/serviceTaxonomy-->
+   <!--PATTERN $loc/strings/serviceTaxonomy-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/serviceTaxonomy"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//srv:SV_ServiceIdentification|//*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1000"
                  mode="M13">
@@ -933,8 +889,7 @@
                     select="document(concat('file:///', $thesaurusDir, '/external/thesauri/theme/inspire-service-taxonomy.rdf'))"/>
       <xsl:variable name="inspire-st" select="$inspire-thesaurus//skos:Concept"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="count($inspire-st) &gt; 0"/>
          <xsl:otherwise>
@@ -944,7 +899,8 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-				INSPIRE service taxonomy thesaurus not found.
+				INSPIRE service taxonomy thesaurus not found. Check installation in codelist/external/thesauri/theme.
+				Download thesaurus from https://geonetwork.svn.sourceforge.net/svnroot/geonetwork/utilities/gemet/thesauri/.
 			</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -954,8 +910,7 @@
       <xsl:variable name="inspire-theme-found"
                     select="count($inspire-thesaurus//skos:Concept[skos:prefLabel = $keyword])"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$inspire-theme-found &gt; 0"/>
          <xsl:otherwise>
@@ -973,8 +928,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$inspire-theme-found &gt; 0">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$inspire-theme-found &gt; 0">
@@ -998,14 +952,12 @@
       <xsl:apply-templates select="*" mode="M13"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/geo-->
+   <!--PATTERN $loc/strings/geo-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/geo"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification[    ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'series'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'dataset'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = '']    /gmd:extent/*/gmd:geographicElement/gmd:EX_GeographicBoundingBox    |    //*[@gco:isoType='gmd:MD_DataIdentification' and (    ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'series'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'dataset'    or ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = '')]    /gmd:extent/*/gmd:geographicElement/gmd:EX_GeographicBoundingBox    "
                  priority="1001"
                  mode="M14">
@@ -1016,8 +968,7 @@
       <xsl:variable name="north" select="number(gmd:northBoundLatitude/gco:Decimal/text())"/>
       <xsl:variable name="south" select="number(gmd:southBoundLatitude/gco:Decimal/text())"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="(-180.00 &lt;= $west) and ( $west &lt;= 180.00)"/>
          <xsl:otherwise>
@@ -1035,8 +986,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-180.00 &lt;= $west) and ( $west &lt;= 180.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-180.00 &lt;= $west) and ( $west &lt;= 180.00)">
@@ -1054,8 +1004,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="(-180.00 &lt;= $east) and ($east &lt;= 180.00)"/>
          <xsl:otherwise>
@@ -1073,8 +1022,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-180.00 &lt;= $east) and ($east &lt;= 180.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-180.00 &lt;= $east) and ($east &lt;= 180.00)">
@@ -1092,8 +1040,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="(-90.00 &lt;= $south) and ($south &lt;= $north)"/>
          <xsl:otherwise>
@@ -1111,8 +1058,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-90.00 &lt;= $south) and ($south &lt;= $north)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-90.00 &lt;= $south) and ($south &lt;= $north)">
@@ -1130,8 +1076,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="($south &lt;= $north) and ($north &lt;= 90.00)"/>
          <xsl:otherwise>
@@ -1149,8 +1094,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="($south &lt;= $north) and ($north &lt;= 90.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="($south &lt;= $north) and ($north &lt;= 90.00)">
@@ -1170,8 +1114,7 @@
       <xsl:apply-templates select="*" mode="M14"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//srv:SV_ServiceIdentification[    ../../gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue/normalize-space(.) = 'service']    /srv:extent/*/gmd:geographicElement/gmd:EX_GeographicBoundingBox"
                  priority="1000"
                  mode="M14">
@@ -1182,8 +1125,7 @@
       <xsl:variable name="north" select="number(gmd:northBoundLatitude/gco:Decimal/text())"/>
       <xsl:variable name="south" select="number(gmd:southBoundLatitude/gco:Decimal/text())"/>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-180.00 &lt;= $west) and ( $west &lt;= 180.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-180.00 &lt;= $west) and ( $west &lt;= 180.00)">
@@ -1201,8 +1143,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-180.00 &lt;= $east) and ($east &lt;= 180.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-180.00 &lt;= $east) and ($east &lt;= 180.00)">
@@ -1220,8 +1161,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="(-90.00 &lt;= $south) and ($south &lt;= $north)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="(-90.00 &lt;= $south) and ($south &lt;= $north)">
@@ -1239,8 +1179,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="($south &lt;= $north) and ($north &lt;= 90.00)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="($south &lt;= $north) and ($north &lt;= 90.00)">
@@ -1264,14 +1203,12 @@
       <xsl:apply-templates select="*" mode="M14"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/temporal-->
+   <!--PATTERN $loc/strings/temporal-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/temporal"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']|    //srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1000"
                  mode="M15">
@@ -1290,8 +1227,7 @@
       <xsl:variable name="revisionDate"
                     select="gmd:citation/*/gmd:date[./*/gmd:dateType/*/@codeListValue='revision']/*/gmd:date/*"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$no_creationDate &lt;= 1"/>
          <xsl:otherwise>
@@ -1309,8 +1245,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$publicationDate or $creationDate or $revisionDate or $temporalExtentBegin or $temporalExtentEnd"/>
          <xsl:otherwise>
@@ -1328,8 +1263,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$temporalExtentBegin">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$temporalExtentBegin">
@@ -1347,8 +1281,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$temporalExtentEnd">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$temporalExtentEnd">
@@ -1366,8 +1299,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$publicationDate">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$publicationDate">
@@ -1385,8 +1317,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$revisionDate">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$revisionDate">
@@ -1404,8 +1335,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$creationDate">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$creationDate">
@@ -1429,14 +1359,12 @@
       <xsl:apply-templates select="*" mode="M15"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/quality-->
+   <!--PATTERN $loc/strings/quality-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/quality"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:DQ_DataQuality[../../gmd:identificationInfo/gmd:MD_DataIdentification    or ../../gmd:identificationInfo/*/@gco:isoType = 'gmd:MD_DataIdentification']"
                  priority="1001"
                  mode="M16">
@@ -1445,8 +1373,7 @@
       <xsl:variable name="lineage"
                     select="not(gmd:lineage/gmd:LI_Lineage/gmd:statement) or (gmd:lineage//gmd:statement/@gco:nilReason)"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($lineage)"/>
          <xsl:otherwise>
@@ -1462,8 +1389,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($lineage)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($lineage)">
@@ -1478,16 +1404,14 @@
       <xsl:apply-templates select="*" mode="M16"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification/gmd:spatialResolution|//*[@gco:isoType='gmd:MD_DataIdentification']/gmd:spatialResolution"
                  priority="1000"
                  mode="M16">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                        context="//gmd:MD_DataIdentification/gmd:spatialResolution|//*[@gco:isoType='gmd:MD_DataIdentification']/gmd:spatialResolution"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="*/gmd:equivalentScale or */gmd:distance"/>
          <xsl:otherwise>
@@ -1503,8 +1427,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="*/gmd:equivalentScale or */gmd:distance">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="*/gmd:equivalentScale or */gmd:distance">
@@ -1523,21 +1446,18 @@
       <xsl:apply-templates select="*" mode="M16"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/conformity-->
+   <!--PATTERN $loc/strings/conformity-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/conformity"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="/gmd:MD_Metadata" priority="1001" mode="M17">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl" context="/gmd:MD_Metadata"/>
       <xsl:variable name="degree"
                     select="count(gmd:dataQualityInfo/*/gmd:report/*/gmd:result/*/gmd:pass)"/>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$degree = 0">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$degree = 0">
@@ -1554,8 +1474,7 @@
       <xsl:apply-templates select="*" mode="M17"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:dataQualityInfo/*/gmd:report/*/gmd:result/*" priority="1000"
                  mode="M17">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
@@ -1567,8 +1486,7 @@
       <xsl:variable name="specification_dateType"
                     select="normalize-space(gmd:specification/*/gmd:date/*/gmd:dateType/*/@codeListValue)"/>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$specification_title">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$specification_title">
@@ -1590,8 +1508,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$degree">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$degree">
@@ -1615,22 +1532,19 @@
       <xsl:apply-templates select="*" mode="M17"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/constraints-->
+   <!--PATTERN $loc/strings/constraints-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/constraints"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']|    //srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1002"
                  mode="M18">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                        context="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']|    //srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="count(gmd:resourceConstraints/*) &gt; 0"/>
          <xsl:otherwise>
@@ -1657,8 +1571,7 @@
       <xsl:variable name="otherConstraintInfo"
                     select="gmd:resourceConstraints/*/gmd:otherConstraints/gco:CharacterString"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$accessConstraints_found"/>
          <xsl:otherwise>
@@ -1676,8 +1589,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$accessConstraints_found">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$accessConstraints_found">
@@ -1695,8 +1607,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($accessConstraints)"/>
          <xsl:otherwise>
@@ -1714,8 +1625,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($otherConstraints)"/>
          <xsl:otherwise>
@@ -1733,8 +1643,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$otherConstraintInfo!='' and not($accessConstraints) and not($otherConstraints)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$otherConstraintInfo!='' and not($accessConstraints) and not($otherConstraints)">
@@ -1754,8 +1663,7 @@
       <xsl:apply-templates select="*" mode="M18"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification/gmd:resourceConstraints/*|    //*[@gco:isoType='gmd:MD_DataIdentification']/gmd:resourceConstraints/*|    //srv:SV_ServiceIdentification/gmd:resourceConstraints/*|    //*[@gco:isoType='srv:SV_ServiceIdentification']/gmd:resourceConstraints/*"
                  priority="1001"
                  mode="M18">
@@ -1768,8 +1676,7 @@
       <xsl:variable name="otherConstraints"
                     select="gmd:otherConstraints/gco:CharacterString/text()"/>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$accessConstraints!=''">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$accessConstraints!=''">
@@ -1787,8 +1694,7 @@
          </svrl:successful-report>
       </xsl:if>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$classification!=''">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$classification!=''">
@@ -1808,8 +1714,7 @@
       <xsl:apply-templates select="*" mode="M18"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_DataIdentification|    //*[@gco:isoType='gmd:MD_DataIdentification']|    //srv:SV_ServiceIdentification|    //*[@gco:isoType='srv:SV_ServiceIdentification']"
                  priority="1000"
                  mode="M18">
@@ -1820,8 +1725,7 @@
       <xsl:variable name="useLimitation_count"
                     select="count(gmd:resourceConstraints/*/gmd:useLimitation/*/text())"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$useLimitation_count"/>
          <xsl:otherwise>
@@ -1839,8 +1743,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$useLimitation_count">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$useLimitation_count">
@@ -1864,20 +1767,17 @@
       <xsl:apply-templates select="*" mode="M18"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/org-->
+   <!--PATTERN $loc/strings/org-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/org"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:identificationInfo" priority="1001" mode="M19">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl" context="//gmd:identificationInfo"/>
       <xsl:variable name="missing" select="not(*/gmd:pointOfContact)"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($missing)"/>
          <xsl:otherwise>
@@ -1895,8 +1795,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($missing)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($missing)">
@@ -1913,8 +1812,7 @@
       <xsl:apply-templates select="*" mode="M19"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:identificationInfo/*/gmd:pointOfContact    |//*[@gco:isoType='gmd:MD_DataIdentification']/gmd:pointOfContact    |//*[@gco:isoType='srv:SV_ServiceIdentification']/gmd:pointOfContact"
                  priority="1000"
                  mode="M19">
@@ -1928,8 +1826,7 @@
       <xsl:variable name="emailAddress"
                     select="*/gmd:contactInfo/*/gmd:address/*/gmd:electronicMailAddress/*/text()"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($missing)"/>
          <xsl:otherwise>
@@ -1947,8 +1844,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($emptyRole)"/>
          <xsl:otherwise>
@@ -1966,8 +1862,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($missing)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($missing)">
@@ -1994,20 +1889,17 @@
       <xsl:apply-templates select="*" mode="M19"/>
    </xsl:template>
 
-   <!--PATTERN
-        $loc/strings/metadata-->
+   <!--PATTERN $loc/strings/metadata-->
 <svrl:text xmlns:svrl="http://purl.oclc.org/dsdl/svrl">
       <xsl:copy-of select="$loc/strings/metadata"/>
    </svrl:text>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_Metadata" priority="1001" mode="M20">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl" context="//gmd:MD_Metadata"/>
       <xsl:variable name="dateStamp" select="gmd:dateStamp/*/text()"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$dateStamp"/>
          <xsl:otherwise>
@@ -2025,8 +1917,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$dateStamp">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$dateStamp">
@@ -2048,8 +1939,7 @@
       <xsl:variable name="language_present"
                     select="geonet:contains-any-of($language,      ('eng', 'fre', 'ger', 'spa', 'dut', 'ita', 'cze', 'lav', 'dan', 'lit', 'mlt',      'pol', 'est', 'por', 'fin', 'rum', 'slo', 'slv', 'gre', 'bul',      'hun', 'swe', 'gle'))"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="$language_present"/>
          <xsl:otherwise>
@@ -2067,8 +1957,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="$language_present">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="$language_present">
@@ -2087,8 +1976,7 @@
       </xsl:if>
       <xsl:variable name="missing" select="not(gmd:contact)"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($missing)"/>
          <xsl:otherwise>
@@ -2106,8 +1994,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($missing)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($missing)">
@@ -2124,8 +2011,7 @@
       <xsl:apply-templates select="*" mode="M20"/>
    </xsl:template>
 
-  <!--RULE
-      -->
+	  <!--RULE -->
 <xsl:template match="//gmd:MD_Metadata/gmd:contact" priority="1000" mode="M20">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                        context="//gmd:MD_Metadata/gmd:contact"/>
@@ -2139,8 +2025,7 @@
       <xsl:variable name="emailAddress"
                     select="gmd:CI_ResponsibleParty/gmd:contactInfo/*/gmd:address/*/gmd:electronicMailAddress/*/text()"/>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($emptyRole)"/>
          <xsl:otherwise>
@@ -2158,8 +2043,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--ASSERT
-      -->
+		    <!--ASSERT -->
 <xsl:choose>
          <xsl:when test="not($missing)"/>
          <xsl:otherwise>
@@ -2177,8 +2061,7 @@
          </xsl:otherwise>
       </xsl:choose>
 
-      <!--REPORT
-      -->
+		    <!--REPORT -->
 <xsl:if test="not($missing)">
          <svrl:successful-report xmlns:svrl="http://purl.oclc.org/dsdl/svrl" ref="#_{geonet:element/@ref}"
                                  test="not($missing)">
